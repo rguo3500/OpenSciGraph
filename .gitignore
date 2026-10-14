@@ -11,6 +11,8 @@
 *.key
 hf_token
 .token
+# huggingface_hub 的令牌元数据缓存（INI 明文；2026-10-14 在本机实测发现此文件名）
+stored_tokens
 tokens/
 secrets/
 
