@@ -1,0 +1,71 @@
+# ===========================================================================
+# OpenSciGraph · Git 忽略规则
+# 原则：只提交源码 / 配置 / 文档 / 发布产物；绝不提交凭据、虚拟环境、模型权重。
+# ===========================================================================
+
+# --- 凭据（最高优先级：令牌、密钥、本地配置一律不入库）---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+hf_token
+.token
+tokens/
+secrets/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# --- 虚拟环境（含早期备份目录，体积很大）---
+.venv/
+.venv_c_mirror_backup/
+venv/
+env/
+ENV/
+
+# --- 编辑器 / 操作系统 ---
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- 模型权重与下载缓存（体积大、可从上游获取）---
+*.gguf
+*.ggml
+*.safetensors
+*.bin
+_setup/
+.ollama/
+models/
+
+# --- HuggingFace 运行缓存 ---
+# 冒烟测试用的独立缓存（每次运行前会清空重建）
+.hf_smoke_cache/
+# 数据集下载缓存（若因调试出现在项目内）
+.cache/huggingface/
+hub/
+
+# --- 运行产物（如需纳入版本管理请自行调整）---
+logs/*.log
+reports/*.json
+reports/*.log
+reports/archive/
+
+# --- 数据文件默认不纳入版本管理（防止误传原始语料）---
+# 合成测试数据可以按需取消注释以纳入
+# data/interim/sample_records.jsonl
+data/raw/*
+data/interim/*
+data/processed/*
+!data/raw/README_DO_NOT_OVERWRITE.txt

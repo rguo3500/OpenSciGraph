@@ -1,0 +1,132 @@
+{
+  "schema_name": "physics_eval_v1",
+  "schema_version": "1.0.0",
+  "stage": 3,
+  "description": "OpenSciGraph 阶段三：基础物理 AI 评测数据集（Benchmark）记录契约。每题严格包含 8 个字段，字段顺序即本文件 fields 数组顺序。",
+  "record_format": "JSONL（每行一个 JSON 对象，UTF-8，ensure_ascii=False）",
+  "output_path": "data/processed/physics_eval_v1.jsonl",
+  "source_data": "data/processed/physics_concepts_v2.jsonl",
+  "question_types": {
+    "concept_distinction": {
+      "count": 20,
+      "label_zh": "概念辨析题",
+      "goal": "测试模型能否精准区分易混淆的相似物理概念（如质量 vs 重力、功 vs 功率、速率 vs 速度）。",
+      "requirement": "四个选项必须都是同一维度上「看起来都合理」的物理表述，干扰项应命中真实的混淆点，不得出现明显荒谬的凑数项。"
+    },
+    "formula_reasoning": {
+      "count": 20,
+      "label_zh": "公式应用与量纲题",
+      "goal": "测试模型的公式记忆、物理量关系推理与量纲/单位判断能力。",
+      "requirement": "必须涉及具体公式或物理量之间的定量关系；干扰项应体现典型错误（公式记错、正比反比搞反、量纲不匹配、单位混淆）。"
+    },
+    "hallucination_trap": {
+      "count": 10,
+      "label_zh": "AI 幻觉陷阱题",
+      "goal": "针对阶段二实测发现的模型易错关系边设计诱导性题目，暴露模型把「相关关系」误判为「种属关系」等系统性盲点。",
+      "requirement": "题干必须植入一个来自阶段二 graph_quality 实测的错误前提（如「动量属于能量」）；正确答案必须明确否定该错误前提；三个干扰项应顺从该错误前提，构成有效的诱导。"
+    }
+  },
+  "fields": [
+    {
+      "name": "eval_id",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "pattern": "^EVAL_P[0-9]{3}$",
+      "description": "评测题编号，格式 EVAL_P + 三位数字。取值规则：EVAL_P### 与 concept_id P### 一一对应（eval_id == \"EVAL_\" + concept_id）。全批次 50 题对应的 concept_id 互不重复，故 eval_id 全局唯一。以脚本生成为准，模型无权改写。"
+    },
+    {
+      "name": "concept_id",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "pattern": "^P[0-9]{3}$",
+      "description": "该题锚定的物理概念编号，必须存在于 data/processed/physics_concepts_v2.jsonl 中。以脚本生成为准，模型无权改写。"
+    },
+    {
+      "name": "question_type",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "enum": [
+        "concept_distinction",
+        "formula_reasoning",
+        "hallucination_trap"
+      ],
+      "description": "题型。三类的配额为 20 / 20 / 10，合计 50 题。以脚本生成为准，模型无权改写。"
+    },
+    {
+      "name": "question",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "min_length": 8,
+      "description": "题干，简体中文。必须是完整、自洽、有唯一最佳答案的问句或判断句。"
+    },
+    {
+      "name": "options",
+      "type": "array<string>",
+      "required": true,
+      "nullable": false,
+      "exact_length": 4,
+      "description": "四个选项，按 A/B/C/D 顺序排列。要求：① 恰好 4 个；② 各项非空、互不重复、长度相近；③ 不含「以上都对」「以上都不对」这类依赖其他选项的元选项。"
+    },
+    {
+      "name": "correct_option",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "enum": ["A", "B", "C", "D"],
+      "description": "唯一正确选项的字母。必须与 options 数组下标对应（A=索引 0，B=索引 1，C=索引 2，D=索引 3）。"
+    },
+    {
+      "name": "explanation",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "min_length": 20,
+      "description": "解析，说明正确选项为何成立，并指出主要干扰项的错因。简体中文。"
+    },
+    {
+      "name": "target_hallucination_point",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "min_length": 4,
+      "description": "本题针对的模型盲点描述，例如「混淆概念与学科分类」「把相关关系误判为种属关系（动量→能量）」。即使是概念辨析题与公式题也必须填写，用于标注该题预期暴露的错误倾向。"
+    }
+  ],
+  "constraints": {
+    "eval_id_unique": true,
+    "eval_id_derived_from_concept_id": true,
+    "concept_id_must_exist_in_stage2_output": true,
+    "concept_id_unique_within_batch": true,
+    "field_order_fixed": true,
+    "no_extra_fields": true,
+    "options_exactly_four": true,
+    "options_mutually_distinct": true,
+    "question_text_unique": true,
+    "type_quota": {
+      "concept_distinction": 20,
+      "formula_reasoning": 20,
+      "hallucination_trap": 10
+    },
+    "offline_only": true,
+    "network_endpoints_allowed": [
+      "http://127.0.0.1:11434/api/chat"
+    ],
+    "forbidden_write_dirs": [
+      "data/raw"
+    ],
+    "source_data_readonly": [
+      "data/processed/physics_concepts_v2.jsonl"
+    ]
+  },
+  "provenance": {
+    "generator": "scripts/generate_physics_eval.py",
+    "model": "qwen2.5:7b-instruct-q5_K_M (Ollama, 本地离线)",
+    "verification_status": "UNVERIFIED",
+    "answer_key_disclaimer": "正确答案与解析由本地 7B 模型生成，未经人工审核。脚本内置盲测自洽校验（重新提问让模型盲答并与答案键比对）作为质量信号，该指标不等于正确率保证。首次使用前必须人工抽检。",
+    "note": "本批次为阶段三首批 50 题，用于验证评测集生产管道可行性。依项目纪律（README 第 5 节），不得对外宣称已通过专家校验。"
+  }
+}

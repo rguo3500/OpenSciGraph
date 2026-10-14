@@ -1,0 +1,28 @@
+# ===========================================================================
+# OpenSciGraph · 换行与二进制约定
+# 背景：本机 core.autocrlf=true。若不加约束，Windows 检出会把 LF 改成 CRLF，
+# 导致 release/ 下发布产物的 sha256 变化 —— 而这些文件是与
+# HuggingFace 上架版本**逐字节比对**过的，必须保持 LF 才能复现。
+# ===========================================================================
+
+# 默认：自动识别文本，且检出/提交一律使用 LF
+* text=auto eol=lf
+
+# --- 必须逐字节稳定的发布产物（禁止任何换行转换）---
+release/v0.1_mvp/*.json  text eol=lf
+release/v0.1_mvp/*.jsonl text eol=lf
+release/v0.1_mvp/*.md    text eol=lf
+
+# --- 明确的二进制类型（不做任何转换、不参与文本 diff）---
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.ico    binary
+*.pdf    binary
+*.zip    binary
+*.parquet binary
+*.gguf   binary
+*.ggml   binary
+*.safetensors binary
+*.bin    binary

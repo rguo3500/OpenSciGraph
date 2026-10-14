@@ -1,0 +1,41 @@
+{
+  "project_name": "OpenSciGraph",
+  "stage": 1,
+  "description": "学术知识图谱数据管道（阶段一：本地目录骨架 + JSONL 校验 + Parquet 导出）",
+  "encoding": "utf-8",
+  "batch_size": 500,
+  "jsonl": {
+    "required_fields": [
+      "entity_id",
+      "source",
+      "is_synthetic",
+      "data_origin"
+    ],
+    "optional_fields": [
+      "entity_label_zh",
+      "entity_label_en",
+      "entity_type",
+      "description",
+      "description_lang",
+      "aliases",
+      "license",
+      "retrieved_at"
+    ],
+    "reject_invalid_qid": true,
+    "drop_duplicates_by": "entity_id",
+    "max_details_in_report": 50
+  },
+  "parquet": {
+    "compression": "snappy",
+    "index": false
+  },
+  "logging": {
+    "level": "INFO"
+  },
+  "safety": {
+    "protected_dirs": [
+      "data/raw"
+    ],
+    "note": "data/raw 目录只读：脚本一律拒绝写入，保护原始输入不被覆盖。"
+  }
+}

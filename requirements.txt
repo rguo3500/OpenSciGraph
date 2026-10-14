@@ -1,0 +1,29 @@
+# -----------------------------------------------------------------------------
+# OpenSciGraph - Stage 1 依赖清单
+# 全部为免费开源本地库，不调用任何收费 API，不上传任何本地数据。
+#
+# 安装（在项目虚拟环境中执行，见 README.md）：
+#   python -m pip install -r requirements.txt
+# -----------------------------------------------------------------------------
+
+# 表格处理 / 数据框
+pandas>=2.2,<3.0
+
+# Parquet 读写引擎（列式存储，原生 UTF-8）
+pyarrow>=15.0
+
+# 说明：pytest 未列入，因为测试使用 Python 标准库 unittest，
+# 不引入额外依赖，方便初学者直接 python -m unittest 运行。
+#
+# ---------------------------------------------------------------------------
+# 国内网络提示
+#   若默认源安装缓慢或报 "No matching distribution found"，改用镜像源：
+#     python -m pip install -i https://mirrors.cloud.tencent.com/pypi/simple -r requirements.txt
+#   （本机实测：腾讯云镜像约 11 MB/s，清华镜像在该网络下无法返回索引导致失败）
+#
+# 本机已安装版本（2026-10-12，Python 3.13.14 / Windows 11）
+#   pandas  2.3.3
+#   pyarrow 26.0.0
+#   numpy   2.5.4
+#   python-dateutil 2.9.0.post0 / pytz 2026.5 / six 1.17.0 / tzdata 2026.5
+# ---------------------------------------------------------------------------

@@ -1,0 +1,110 @@
+{
+  "schema_name": "physics_concepts_v2",
+  "schema_version": "2.0.0",
+  "stage": 2,
+  "description": "OpenSciGraph 阶段二：基础物理概念结构化提纯（V2 记录契约）。每条概念记录严格包含 11 个字段，字段顺序即本文件 fields 数组顺序。",
+  "record_format": "JSONL（每行一个 JSON 对象，UTF-8，ensure_ascii=False）",
+  "output_path": "data/processed/physics_concepts_v2.jsonl",
+  "fields": [
+    {
+      "name": "concept_id",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "pattern": "^P[0-9]{3}$",
+      "description": "概念编号，P + 三位数字，与 config/physics_concepts_100_catalog.json 一致；以清单为准，模型无权改写。"
+    },
+    {
+      "name": "name_zh",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "allow_empty_string": true,
+      "description": "中文名称。允许为空字符串（缺失时保留空值，并在 missing_zh_reason 中记录原因）。"
+    },
+    {
+      "name": "name_en",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "allow_empty_string": true,
+      "description": "英文名称。以清单为准，模型无权改写。"
+    },
+    {
+      "name": "wikidata_id",
+      "type": "string",
+      "required": true,
+      "nullable": true,
+      "pattern": "^Q[1-9][0-9]*$",
+      "description": "Wikidata QID。离线批次无法核验，默认写 null，等待阶段三联网核验后回填；不得填入模型凭记忆生成的未核验值。"
+    },
+    {
+      "name": "definition_zh",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "min_length": 10,
+      "description": "中文定义，一句话可陈述的物理定义。"
+    },
+    {
+      "name": "formula",
+      "type": "string",
+      "required": true,
+      "nullable": true,
+      "description": "该概念的核心公式（如 F = ma）。无公式的概念（如惯性、能量等描述性概念）写 null。"
+    },
+    {
+      "name": "parent_concept",
+      "type": "string",
+      "required": true,
+      "nullable": true,
+      "description": "上位概念的中文名，用于构建层级边。无明确上位概念时写 null。"
+    },
+    {
+      "name": "child_concepts",
+      "type": "array<string>",
+      "required": true,
+      "nullable": false,
+      "description": "下位概念中文名列表，缺失时为空列表 []，不得为 null。"
+    },
+    {
+      "name": "license_type",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "许可标识。本离线批次来源未核验，统一写 UNVERIFIED；来源与许可审核通过后才可替换为 CC0 / CC BY-SA 4.0 等真实值。"
+    },
+    {
+      "name": "source_url",
+      "type": "string",
+      "required": true,
+      "nullable": true,
+      "description": "来源链接。离线批次不得臆造，默认写 null，等待阶段三联网核验后回填。"
+    },
+    {
+      "name": "missing_zh_reason",
+      "type": "string",
+      "required": true,
+      "nullable": true,
+      "description": "name_zh 为空时的原因说明；name_zh 正常时为 null。"
+    }
+  ],
+  "constraints": {
+    "concept_id_unique": true,
+    "field_order_fixed": true,
+    "no_extra_fields": true,
+    "offline_only": true,
+    "network_endpoints_allowed": [
+      "http://127.0.0.1:11434/api/chat"
+    ],
+    "forbidden_write_dirs": [
+      "data/raw"
+    ]
+  },
+  "provenance": {
+    "generator": "scripts/clean_physics_v2.py",
+    "model": "qwen2.5:7b-instruct-q5_K_M (Ollama, 本地离线)",
+    "verification_status": "UNVERIFIED",
+    "note": "本批次所有记录由本地大模型离线生成，未经 Wikidata / Wikipedia 在线核验。依项目纪律（README 第 5 节），核验完成前不得作为真实 Wikipedia / Wikidata 数据发布。"
+  }
+}
