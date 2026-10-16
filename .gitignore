@@ -61,6 +61,8 @@ hub/
 # --- 运行产物（如需纳入版本管理请自行调整）---
 logs/*.log
 reports/*.json
+# 允许追踪大模型评测报告
+!reports/eval_*.json
 reports/*.log
 reports/archive/
 
