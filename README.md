@@ -1,15 +1,49 @@
 # OpenSciGraph
 
-学术知识图谱数据管道（**当前进度：阶段一**）。
+学术知识图谱数据管道（**当前进度：v0.1 MVP 已发布**）。
 
 目标是在**本地、免费、可离线**的前提下，把来源规范的实体数据
 （JSONL 中间格式）规范化并输出为 Parquet 交付格式。
 
-> 阶段一尚未接入任何真实数据源。当前所有数据均为**合成测试数据**。
+> **数据性质声明**：本项目**尚未接入任何真实数据源**。阶段一的管道使用**合成测试数据**；
+> v0.1 MVP 黄金包由本地小模型**离线蒸馏**产出，`wikidata_id` / `source_url` 一律为 `null`、
+> `license_type` 统一标为 `UNVERIFIED` —— **不冒充真实 Wikipedia / Wikidata 数据**。
+
+---
+
+## v0.1 MVP 快速导航
+
+| 条目 | 位置 / 链接 |
+|---|---|
+| **核心产物** | `release/v0.1_mvp/OpenSciGraph_Golden_v0.1.json` —— **16 物理概念 + 16 防幻觉 Benchmarks**（11 概念辨析 + 5 幻觉陷阱） |
+| **Hugging Face Datasets 主页** | <https://huggingface.co/datasets/guowei79/OpenSciGraph-Physics-Bench> |
+| **数据集详细说明文档** | `release/v0.1_mvp/HuggingFace_Dataset_Card.md` |
+| **联系与反馈邮箱** | rguo3500@gmail.com |
+
+**本包要点**
+
+- 16 条概念 + 16 道题**全部经人工逐题验算**（非模型自评）后准入；另有 9 道已隔离、
+  6 道确认缺陷 + 3 道存疑已剔除，均未进入本包。
+- 打包过程**未调用任何模型**（`model_involved: false`）、全程离线（`offline: true`），
+  由 `scripts/build_golden_v01.py` 确定性生成（不调模型、不联网、不改原始数据）。
+- 在线加载：
+
+  ```python
+  from datasets import load_dataset
+  ds = load_dataset("guowei79/OpenSciGraph-Physics-Bench", "eval_items", split="train")
+  ```
+
+- 已知边界：概念间的 `parent_concept` / `child_concepts` 为**模型推断的层级边**
+  （实测双向闭合率约 48.4%），**仅供检索参考，不可作为权威本体**；
+  16 道公式计算题未纳入本包，也未经逐题复核。
 
 ---
 
 ## 1. 目录结构
+
+> 下列为**阶段一的基础管道**结构。v0.1 MVP 新增的对外交付物与脚本见上方快速导航区，
+> 主要为 `release/v0.1_mvp/`（黄金包、数据集卡、宣发文案）与 `scripts/`（清洗、评测生成、
+> 黄金包构建、HF 上架与在线冒烟）。
 
 ```
 E:\OpenSciGraph\
