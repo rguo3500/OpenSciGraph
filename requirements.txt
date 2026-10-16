@@ -1,6 +1,9 @@
 # -----------------------------------------------------------------------------
-# OpenSciGraph - Stage 1 依赖清单
-# 全部为免费开源本地库，不调用任何收费 API，不上传任何本地数据。
+# OpenSciGraph - 依赖清单
+#
+# 说明：数据管道本身仍全部使用免费开源的本地库，不调用任何收费 API、不上传数据。
+# 唯一例外是 openai（见下方），它只被 scripts/eval_models.py 用来评测**外部**大模型；
+# 该脚本是可选组件，不运行它就不会有任何外部请求。
 #
 # 安装（在项目虚拟环境中执行，见 README.md）：
 #   python -m pip install -r requirements.txt
@@ -12,6 +15,12 @@ pandas>=2.2,<3.0
 # Parquet 读写引擎（列式存储，原生 UTF-8）
 pyarrow>=15.0
 
+# LLM 评测客户端的官方 SDK（OpenAI 兼容协议）
+# 仅 scripts/eval_models.py 使用；该脚本显式面向外部模型接口，
+# 但评测题本身已公开发布，且不读取、不上传任何本地原始语料。
+# 密钥只从环境变量读取，脚本内零硬编码。
+openai>=1.40
+
 # 说明：pytest 未列入，因为测试使用 Python 标准库 unittest，
 # 不引入额外依赖，方便初学者直接 python -m unittest 运行。
 #
@@ -21,9 +30,10 @@ pyarrow>=15.0
 #     python -m pip install -i https://mirrors.cloud.tencent.com/pypi/simple -r requirements.txt
 #   （本机实测：腾讯云镜像约 11 MB/s，清华镜像在该网络下无法返回索引导致失败）
 #
-# 本机已安装版本（2026-10-12，Python 3.13.14 / Windows 11）
+# 本机已安装版本（2026-10-16，Python 3.13.14 / Windows 11）
 #   pandas  2.3.3
 #   pyarrow 26.0.0
 #   numpy   2.5.4
+#   openai  3.31.0
 #   python-dateutil 2.9.0.post0 / pytz 2026.5 / six 1.17.0 / tzdata 2026.5
 # ---------------------------------------------------------------------------

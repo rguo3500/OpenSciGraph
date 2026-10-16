@@ -454,7 +454,10 @@ def main() -> int:
     }
 
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
-    REPORT_FILE.write_text(build_report(context), encoding="utf-8")
+    # newline="\n" 必须显式指定：Windows 下 text 模式默认把 \n 翻译成 \r\n，
+    # 会把本文件写成 CRLF，与 .gitattributes 的 `* text=auto eol=lf` 冲突，
+    # 且导致每次跑完测试工作区都出现无意义的换行差异。
+    REPORT_FILE.write_text(build_report(context), encoding="utf-8", newline="\n")
     logger.info("验收报告已生成：%s", common.relative_to_project(REPORT_FILE))
 
     failed = [s for s in steps if not s["ok"]]
