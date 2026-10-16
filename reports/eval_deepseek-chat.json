@@ -1,0 +1,526 @@
+{
+  "report_type": "llm_hallucination_eval",
+  "generated_at": "2026-10-16T07:30:26Z",
+  "script": "scripts/eval_models.py",
+  "dataset": {
+    "path": "release/v0.1_mvp/OpenSciGraph_Golden_v0.1.json",
+    "bytes": 41201,
+    "sha256": "0cac0180402d470e24e4a4a48edb023ad74712c2ec95379128a45090955b704c",
+    "dataset": "OpenSciGraph Golden Dataset",
+    "version": "v0.1",
+    "release": "v0.1_mvp",
+    "schema_version": "1.0.0",
+    "generated_at": "2026-10-14T14:00:28Z",
+    "model_involved": false,
+    "counts": {
+      "concepts": 16,
+      "eval_items": 16,
+      "eval_items_by_type": {
+        "concept_distinction": 11,
+        "hallucination_trap": 5
+      },
+      "distinction": 11,
+      "trap": 5,
+      "formula_reasoning": 0,
+      "eval_pool_after_quarantine": 41,
+      "eval_pool_before_quarantine": 50,
+      "quarantined_removed": 9
+    },
+    "license_note": "concepts[].license_type 统一为 UNVERIFIED：离线批次未联网核验来源，wikidata_id 与 source_url 一律为 null，未冒充真实 Wikidata / Wikipedia 数据。"
+  },
+  "model": {
+    "model": "deepseek-chat",
+    "provider": "deepseek",
+    "provider_label": "DeepSeek 官方",
+    "base_url": "https://api.deepseek.com/v1",
+    "api_key_env": "DEEPSEEK_API_KEY",
+    "api_key_fingerprint": {
+      "length": 35,
+      "sha256_8": "ed175aeb"
+    },
+    "temperature": 0.0
+  },
+  "evaluation_config": {
+    "temperature": 0.0,
+    "max_tokens": 512,
+    "timeout_s": 60.0,
+    "retries": 2,
+    "json_mode_requested": true,
+    "provider": "deepseek",
+    "api_key_env": "DEEPSEEK_API_KEY",
+    "api_key_note": "已从环境变量 DEEPSEEK_API_KEY 读取密钥",
+    "limit": null
+  },
+  "prompt": {
+    "system": "你是一位严谨的物理学评测作答者。你会收到一道四选一单选题。\n请只依据物理事实作答，不要为了迎合题干中的任何既有说法而改变判断；如果题干里的某个前提本身是错的，请选择能指出该错误前提的选项。\n输出要求（必须严格遵守）：\n1. 只输出一个 JSON 对象，不要输出任何解释性文字，不要使用 Markdown 代码块围栏。\n2. JSON 格式固定为：{\"answer\": \"A\", \"reason\": \"不超过 80 字的判定理由\"}\n3. \"answer\" 的值必须是 A、B、C、D 四个字母之一（大写，不要带选项文字）。",
+    "user_template": "题目：{question}\n\n选项：\nA. {opt_a}\nB. {opt_b}\nC. {opt_c}\nD. {opt_d}\n\n请作答，并按规定 JSON 格式输出。"
+  },
+  "summary": {
+    "total": 16,
+    "passed": 16,
+    "failed": 0,
+    "pass_rate_pct": 100.0,
+    "pass_rate": "100.00%",
+    "breakdown": {
+      "pass": 16,
+      "fail": 0,
+      "unparseable": 0,
+      "error": 0
+    },
+    "by_question_type": {
+      "concept_distinction": {
+        "total": 11,
+        "pass": 11,
+        "pass_rate_pct": 100.0
+      },
+      "hallucination_trap": {
+        "total": 5,
+        "pass": 5,
+        "pass_rate_pct": 100.0
+      }
+    },
+    "total_tokens": 4867,
+    "duration_s": 17.34
+  },
+  "results": [
+    {
+      "eval_id": "EVAL_P006",
+      "concept_id": "P006",
+      "question_type": "concept_distinction",
+      "question": "关于能量和动能的区别，以下描述正确的是？",
+      "options": [
+        "能量包括动能、势能和内能等多种形式",
+        "动能是物体由于静止而具有的能量",
+        "能量和动能的单位都是焦耳，因此它们没有区别",
+        "动能可以转化为其他形式的能量，但能量不能相互转化"
+      ],
+      "expected_answer": "A",
+      "model_answer": "A",
+      "verdict": "pass",
+      "judgment_basis": "预期答案=A；模型给出=A；一致，判定通过。 模型理由：能量是各种形式能量的总称，包括动能、势能、内能等；动能是物体由于运动而具有的能量，单位相同但概念不同，且能量可以相互转化。",
+      "answer_parse_method": "json:answer",
+      "model_raw_output": "{\"answer\": \"A\", \"reason\": \"能量是各种形式能量的总称，包括动能、势能、内能等；动能是物体由于运动而具有的能量，单位相同但概念不同，且能量可以相互转化。\"}",
+      "target_hallucination_point": "模型可能混淆静止物体是否具有动能",
+      "reference_explanation": "正确选项A说明了能量是统称，包括动能、势能和内能等多种形式。主要干扰项B混淆了静止物体不具有动能的概念。",
+      "latency_ms": 1315,
+      "usage": {
+        "prompt_tokens": 253,
+        "completion_tokens": 50,
+        "total_tokens": 303
+      },
+      "error": null
+    },
+    {
+      "eval_id": "EVAL_P012",
+      "concept_id": "P012",
+      "question_type": "concept_distinction",
+      "question": "下列描述中，哪一项正确区分了速度与加速度？",
+      "options": [
+        "速度表示物体位置变化的快慢，而加速度表示物体速度变化的快慢",
+        "速度和加速度都是描述物体位置变化的物理量",
+        "速度是矢量，加速度是标量",
+        "速度和加速度都只考虑运动方向"
+      ],
+      "expected_answer": "A",
+      "model_answer": "A",
+      "verdict": "pass",
+      "judgment_basis": "预期答案=A；模型给出=A；一致，判定通过。 模型理由：速度是位置变化率，加速度是速度变化率；B混淆概念，C加速度也是矢量，D两者均需大小和方向，故A正确。",
+      "answer_parse_method": "json:answer",
+      "model_raw_output": "{\"answer\": \"A\", \"reason\": \"速度是位置变化率，加速度是速度变化率；B混淆概念，C加速度也是矢量，D两者均需大小和方向，故A正确。\"}",
+      "target_hallucination_point": "模型可能混淆速度和加速度的概念",
+      "reference_explanation": "正确选项指出速度与加速度的区别在于描述对象不同。主要干扰项错在将速度和加速度混为一谈。",
+      "latency_ms": 1123,
+      "usage": {
+        "prompt_tokens": 252,
+        "completion_tokens": 44,
+        "total_tokens": 296
+      },
+      "error": null
+    },
+    {
+      "eval_id": "EVAL_P026",
+      "concept_id": "P026",
+      "question_type": "concept_distinction",
+      "question": "关于物体的能量形式，以下描述正确的是：",
+      "options": [
+        "势能仅指重力势能",
+        "弹性势能不属于势能的一种",
+        "势能包括重力势能和弹性势能",
+        "重力势能和弹性势能都是动能的一种"
+      ],
+      "expected_answer": "C",
+      "model_answer": "C",
+      "verdict": "pass",
+      "judgment_basis": "预期答案=C；模型给出=C；一致，判定通过。 模型理由：势能是相互作用的物体凭借其位置而具有的能量，包括重力势能和弹性势能等，故C正确。",
+      "answer_parse_method": "json:answer",
+      "model_raw_output": "{\"answer\": \"C\", \"reason\": \"势能是相互作用的物体凭借其位置而具有的能量，包括重力势能和弹性势能等，故C正确。\"}",
+      "target_hallucination_point": "模型可能对能量形式的区分不够细致",
+      "reference_explanation": "正确选项为C，因为势能包括了重力势能和弹性势能。主要干扰项A和B错误在于混淆了势能的定义，而D将势能与动能混为一谈。",
+      "latency_ms": 1157,
+      "usage": {
+        "prompt_tokens": 240,
+        "completion_tokens": 37,
+        "total_tokens": 277
+      },
+      "error": null
+    },
+    {
+      "eval_id": "EVAL_P044",
+      "concept_id": "P044",
+      "question_type": "concept_distinction",
+      "question": "在描述一个振动过程时，频率与周期的关系是怎样的？",
+      "options": [
+        "频率越高，周期越长",
+        "频率与周期互为倒数",
+        "频率表示振动的幅度大小",
+        "周期表示单位时间内振动的次数"
+      ],
+      "expected_answer": "B",
+      "model_answer": "B",
+      "verdict": "pass",
+      "judgment_basis": "预期答案=B；模型给出=B；一致，判定通过。 模型理由：频率f定义为单位时间内振动次数，周期T为一次振动所需时间，二者严格互为倒数，即f=1/T。",
+      "answer_parse_method": "json:answer",
+      "model_raw_output": "{\"answer\": \"B\", \"reason\": \"频率f定义为单位时间内振动次数，周期T为一次振动所需时间，二者严格互为倒数，即f=1/T。\"}",
+      "target_hallucination_point": "频率和周期的关系容易混淆",
+      "reference_explanation": "正确选项是频率与周期互为倒数。主要干扰项错误在于混淆了频率和周期的定义，频率表示单位时间内完成的振动次数，而周期则是完成一次振动所需的时间。",
+      "latency_ms": 758,
+      "usage": {
+        "prompt_tokens": 235,
+        "completion_tokens": 38,
+        "total_tokens": 273
+      },
+      "error": null
+    },
+    {
+      "eval_id": "EVAL_P045",
+      "concept_id": "P045",
+      "question_type": "concept_distinction",
+      "question": "下列关于波长和波速的说法中，正确的是？",
+      "options": [
+        "波长是相邻同相点之间的距离，波速表示波传播的快慢",
+        "波长和波速都是描述波的频率特征",
+        "波长和波速都与介质无关",
+        "波长和波速的单位相同"
+      ],
+      "expected_answer": "A",
+      "model_answer": "A",
+      "verdict": "pass",
+      "judgment_basis": "预期答案=A；模型给出=A；一致，判定通过。 模型理由：波长是相邻同相点间距离，波速描述波传播快慢，A正确；B、C、D均错误。",
+      "answer_parse_method": "json:answer",
+      "model_raw_output": "{\"answer\": \"A\", \"reason\": \"波长是相邻同相点间距离，波速描述波传播快慢，A正确；B、C、D均错误。\"}",
+      "target_hallucination_point": "模型可能混淆波长与波速的概念及其物理意义",
+      "reference_explanation": "正确选项指出了波长和波速的本质区别。主要干扰项错在混淆了波长与波速的定义，认为它们描述的是相同的物理特征。",
+      "latency_ms": 1422,
+      "usage": {
+        "prompt_tokens": 246,
+        "completion_tokens": 39,
+        "total_tokens": 285
+      },
+      "error": null
+    },
+    {
+      "eval_id": "EVAL_P049",
+      "concept_id": "P049",
+      "question_type": "concept_distinction",
+      "question": "以下哪种现象描述了波在遇到障碍物时的行为？A. 干涉 B. 波动 C. 衍射 D. 稳定叠加",
+      "options": [
+        "干涉",
+        "波动",
+        "衍射",
+        "稳定叠加"
+      ],
+      "expected_answer": "C",
+      "model_answer": "C",
+      "verdict": "pass",
+      "judgment_basis": "预期答案=C；模型给出=C；一致，判定通过。 模型理由：衍射是波遇到障碍物或孔隙时绕过障碍物传播的现象，符合题意。",
+      "answer_parse_method": "json:answer",
+      "model_raw_output": "{\"answer\": \"C\", \"reason\": \"衍射是波遇到障碍物或孔隙时绕过障碍物传播的现象，符合题意。\"}",
+      "target_hallucination_point": "模型可能将干涉与衍射混淆",
+      "reference_explanation": "正确答案是C，衍射描述了波在遇到障碍物时绕过障碍物继续传播的现象。干扰项‘干涉’是两列波相遇时相互叠加的现象，容易混淆。",
+      "latency_ms": 843,
+      "usage": {
+        "prompt_tokens": 234,
+        "completion_tokens": 29,
+        "total_tokens": 263
+      },
+      "error": null
+    },
+    {
+      "eval_id": "EVAL_P060",
+      "concept_id": "P060",
+      "question_type": "concept_distinction",
+      "question": "关于热量和内能，下列说法正确的是？",
+      "options": [
+        "热量是物体间因温度差而传递的能量，内能是物体内部所有分子的动能和势能之和",
+        "热量可以用来描述物体内部能量总和，内能是能量传递的过程量",
+        "热量和内能都可以用焦耳作为单位，因此它们在本质上没有区别",
+        "热量是指物体的内能变化，内能是物体与外界进行热交换的结果"
+      ],
+      "expected_answer": "A",
+      "model_answer": "A",
+      "verdict": "pass",
+      "judgment_basis": "预期答案=A；模型给出=A；一致，判定通过。 模型理由：热量是过程量，指因温差传递的能量；内能是状态量，为分子动能与势能之和，单位均为焦耳但本质不同。",
+      "answer_parse_method": "json:answer",
+      "model_raw_output": "{\"answer\": \"A\", \"reason\": \"热量是过程量，指因温差传递的能量；内能是状态量，为分子动能与势能之和，单位均为焦耳但本质不同。\"}",
+      "target_hallucination_point": "热量是过程量而非状态量",
+      "reference_explanation": "正确选项为A，热量描述的是能量传递的过程量，而内能描述的是物体内部能量总和的状态量。主要干扰项B混淆了热量与内能的定义。",
+      "latency_ms": 1074,
+      "usage": {
+        "prompt_tokens": 277,
+        "completion_tokens": 44,
+        "total_tokens": 321
+      },
+      "error": null
+    },
+    {
+      "eval_id": "EVAL_P070",
+      "concept_id": "P070",
+      "question_type": "concept_distinction",
+      "question": "在下列哪种情况下，传热主要通过热传导发生？",
+      "options": [
+        "金属块加热时，热量从高温区向低温区传递",
+        "煮沸的水蒸汽上升到冷锅盖上，形成雾气",
+        "冬天烤火时，人感受到热气",
+        "阳光照射下，物体表面温度升高"
+      ],
+      "expected_answer": "A",
+      "model_answer": "A",
+      "verdict": "pass",
+      "judgment_basis": "预期答案=A；模型给出=A；一致，判定通过。 模型理由：热传导是依靠物质内部微观粒子传递热量，主要发生在固体中。金属块加热时热量从高温区向低温区传递属于热传导；B、C为对流，D为辐射。",
+      "answer_parse_method": "json:answer",
+      "model_raw_output": "{\"answer\": \"A\", \"reason\": \"热传导是依靠物质内部微观粒子传递热量，主要发生在固体中。金属块加热时热量从高温区向低温区传递属于热传导；B、C为对流，D为辐射。\"}",
+      "target_hallucination_point": "模型可能混淆热传导与热对流的区别",
+      "reference_explanation": "正确选项描述了固体内部由于温度差引起的分子碰撞过程，符合热传导定义。主要干扰项是热对流，它涉及流体的流动，而非分子直接碰撞。",
+      "latency_ms": 1012,
+      "usage": {
+        "prompt_tokens": 250,
+        "completion_tokens": 53,
+        "total_tokens": 303
+      },
+      "error": null
+    },
+    {
+      "eval_id": "EVAL_P073",
+      "concept_id": "P073",
+      "question_type": "concept_distinction",
+      "question": "下列描述中，哪一项正确区分了电荷与电流的本质区别？",
+      "options": [
+        "电荷是物质的一种属性，而电流是电荷的定向移动速率",
+        "电荷和电流都可以用安培作为单位",
+        "电荷可以存在于绝缘体中，但电流只能在导体中存在",
+        "电荷是瞬时现象，而电流是稳恒现象"
+      ],
+      "expected_answer": "A",
+      "model_answer": "A",
+      "verdict": "pass",
+      "judgment_basis": "预期答案=A；模型给出=A；一致，判定通过。 模型理由：电荷是物质固有属性，单位库仑；电流是电荷定向移动的速率，单位安培，二者本质不同，A正确。B单位错，C电流也可在绝缘体短暂存在，D电荷非瞬时现象。",
+      "answer_parse_method": "json:answer",
+      "model_raw_output": "{\"answer\": \"A\", \"reason\": \"电荷是物质固有属性，单位库仑；电流是电荷定向移动的速率，单位安培，二者本质不同，A正确。B单位错，C电流也可在绝缘体短暂存在，D电荷非瞬时现象。\"}",
+      "target_hallucination_point": "模型可能混淆电荷和电流的物理本质",
+      "reference_explanation": "正确选项说明了电荷作为物质属性的本质与电流作为电荷定向移动速率的区别。主要干扰项错在将电流和电荷的单位混淆。",
+      "latency_ms": 1002,
+      "usage": {
+        "prompt_tokens": 259,
+        "completion_tokens": 59,
+        "total_tokens": 318
+      },
+      "error": null
+    },
+    {
+      "eval_id": "EVAL_P093",
+      "concept_id": "P093",
+      "question_type": "concept_distinction",
+      "question": "下列哪项描述了偏振与衍射的区别？",
+      "options": [
+        "偏振说明光波在传播过程中振动方向固定，而衍射说明光波遇到障碍物时会发生弯曲现象",
+        "偏振与电磁波无关，而衍射是波动性质的体现",
+        "偏振和衍射都表明光波可以绕过障碍物",
+        "偏振和衍射都是光的波动性表现形式，二者无区别"
+      ],
+      "expected_answer": "A",
+      "model_answer": "A",
+      "verdict": "pass",
+      "judgment_basis": "预期答案=A；模型给出=A；一致，判定通过。 模型理由：偏振指光波振动方向固定，是横波特性；衍射指光波遇障碍物或孔隙时传播方向改变而弯曲，二者物理机制不同。",
+      "answer_parse_method": "json:answer",
+      "model_raw_output": "{\"answer\": \"A\", \"reason\": \"偏振指光波振动方向固定，是横波特性；衍射指光波遇障碍物或孔隙时传播方向改变而弯曲，二者物理机制不同。\"}",
+      "target_hallucination_point": "模型可能混淆偏振和衍射的物理本质",
+      "reference_explanation": "选项A正确地指出了偏振与衍射的本质区别。偏振说明光是横波，振动方向固定；而衍射则描述了光波绕过障碍物的现象。选项D错误在于混淆了二者的性质差异。",
+      "latency_ms": 1028,
+      "usage": {
+        "prompt_tokens": 266,
+        "completion_tokens": 45,
+        "total_tokens": 311
+      },
+      "error": null
+    },
+    {
+      "eval_id": "EVAL_P096",
+      "concept_id": "P096",
+      "question_type": "concept_distinction",
+      "question": "在光电效应中，光子与金属表面相互作用，使电子逸出。请问以下说法正确的是：",
+      "options": [
+        "光子是光的量子，携帯能量和动量，但不是粒子",
+        "光子的能量与频率成正比，而光电效应说明光子可以打出电子",
+        "光子的能量与频率无关，光电效应中电子的逸出与光子数量有关",
+        "光电效应仅发生在特定波长的光照射金属表面时"
+      ],
+      "expected_answer": "B",
+      "model_answer": "B",
+      "verdict": "pass",
+      "judgment_basis": "预期答案=B；模型给出=B；一致，判定通过。 模型理由：光子能量E=hν与频率成正比，光电效应中光子把能量交给电子使其逸出，故B正确；A否认光子粒子性错误；C说能量与频率无关错误；D忽略逸出功与频率阈值关系，表述不严谨。",
+      "answer_parse_method": "json:answer",
+      "model_raw_output": "{\"answer\": \"B\", \"reason\": \"光子能量E=hν与频率成正比，光电效应中光子把能量交给电子使其逸出，故B正确；A否认光子粒子性错误；C说能量与频率无关错误；D忽略逸出功与频率阈值关系，表述不严谨。\"}",
+      "target_hallucination_point": "模型可能混淆光子的量子性质与其在光电效应中的角色",
+      "reference_explanation": "正确选项为B，光子是量子，携帯能量和动量。主要干扰项A错在否认了光子作为粒子的存在。C错在认为光子能量与频率无关。D错在限制了光电效应发生的条件。",
+      "latency_ms": 1196,
+      "usage": {
+        "prompt_tokens": 278,
+        "completion_tokens": 65,
+        "total_tokens": 343
+      },
+      "error": null
+    },
+    {
+      "eval_id": "EVAL_P004",
+      "concept_id": "P004",
+      "question_type": "hallucination_trap",
+      "question": "关于万有引力定律与力的关系，下列说法正确的是？某同学认为万有引力定律就是一种力，请你判断。",
+      "options": [
+        "是的，万有引力定律就是一种力",
+        "不是，万有引力定律描述了力的作用规律",
+        "万有引力定律可以产生力，但不是力本身",
+        "万有引力定律与力没有关系"
+      ],
+      "expected_answer": "B",
+      "model_answer": "B",
+      "verdict": "pass",
+      "judgment_basis": "预期答案=B；模型给出=B；一致，判定通过。 模型理由：万有引力定律是描述物体间引力作用规律的物理定律，不是力本身；力是物体间的相互作用，定律揭示其定量关系。 该题针对的幻觉点：把相关关系误判为种属关系",
+      "answer_parse_method": "json:answer",
+      "model_raw_output": "{\"answer\": \"B\", \"reason\": \"万有引力定律是描述物体间引力作用规律的物理定律，不是力本身；力是物体间的相互作用，定律揭示其定量关系。\"}",
+      "target_hallucination_point": "把相关关系误判为种属关系",
+      "reference_explanation": "正确答案为B，万有引力定律描述的是物体之间力的作用规律，而不是一种力。干扰项A和C看似合理，但都未能明确指出二者本质上的区别。D项虽然提到了关系不成立，但没有具体说明正确的关系。",
+      "latency_ms": 1376,
+      "usage": {
+        "prompt_tokens": 261,
+        "completion_tokens": 41,
+        "total_tokens": 302
+      },
+      "error": null
+    },
+    {
+      "eval_id": "EVAL_P008",
+      "concept_id": "P008",
+      "question_type": "hallucination_trap",
+      "question": "在一次物理复习课上，小明提出了一个观点：‘功率是一种能量’。请问下列说法中，哪一个是正确的？",
+      "options": [
+        "功率是单位时间内完成的功，是描述能量转化快慢的物理量",
+        "功率和能量一样，都可以用焦耳作为单位",
+        "功率和能量一样，都是描述物体做功能力的大小",
+        "功率和能量一样，都表示物体做功的能力"
+      ],
+      "expected_answer": "A",
+      "model_answer": "A",
+      "verdict": "pass",
+      "judgment_basis": "预期答案=A；模型给出=A；一致，判定通过。 模型理由：功率是单位时间完成的功，描述能量转化快慢；能量是做功本领，单位焦耳，二者物理意义不同，故A正确。 该题针对的幻觉点：把种属关系误判为同一类关系",
+      "answer_parse_method": "json:answer",
+      "model_raw_output": "{\"answer\": \"A\", \"reason\": \"功率是单位时间完成的功，描述能量转化快慢；能量是做功本领，单位焦耳，二者物理意义不同，故A正确。\"}",
+      "target_hallucination_point": "把种属关系误判为同一类关系",
+      "reference_explanation": "正确答案指出功率和能量是不同概念，功率描述的是能量转化的速度，而非能量本身。其他选项都顺从了错误前提，混淆了二者关系。",
+      "latency_ms": 1009,
+      "usage": {
+        "prompt_tokens": 269,
+        "completion_tokens": 42,
+        "total_tokens": 311
+      },
+      "error": null
+    },
+    {
+      "eval_id": "EVAL_P010",
+      "concept_id": "P010",
+      "question_type": "hallucination_trap",
+      "question": "关于加速度与运动学的关系，下列说法正确的是？某同学认为‘加速度是运动学的一个分支学科’，请问该说法是否正确。",
+      "options": [
+        "正确",
+        "加速度是描述物体速度变化快慢的物理量，而运动学是研究物体机械运动规律的一门学科，二者不是种属关系",
+        "加速度和运动学都属于力学的一部分，因此加速度可以视为运动学的一个分支",
+        "加速度只是运动学中的一个概念，因此该说法正确"
+      ],
+      "expected_answer": "B",
+      "model_answer": "B",
+      "verdict": "pass",
+      "judgment_basis": "预期答案=B；模型给出=B；一致，判定通过。 模型理由：加速度是描述速度变化快慢的物理量，运动学是研究机械运动规律的学科，二者不是种属关系，题干说法错误。 该题针对的幻觉点：把概念与学科分类的关系误判为种属关系",
+      "answer_parse_method": "json:answer",
+      "model_raw_output": "{\"answer\": \"B\", \"reason\": \"加速度是描述速度变化快慢的物理量，运动学是研究机械运动规律的学科，二者不是种属关系，题干说法错误。\"}",
+      "target_hallucination_point": "把概念与学科分类的关系误判为种属关系",
+      "reference_explanation": "加速度是物理量，而运动学是学科分类。选项A、C、D均误将二者关系当作种属关系，容易导致混淆。",
+      "latency_ms": 1063,
+      "usage": {
+        "prompt_tokens": 284,
+        "completion_tokens": 41,
+        "total_tokens": 325
+      },
+      "error": null
+    },
+    {
+      "eval_id": "EVAL_P059",
+      "concept_id": "P059",
+      "question_type": "hallucination_trap",
+      "question": "关于温度与能量的关系，下列说法正确的是？",
+      "options": [
+        "温度是物体内部粒子无规则热运动的剧烈程度，不是能量的形式",
+        "温度和能量在本质上是一样的，都可以用来描述系统的内能",
+        "温度的变化会引起系统能量的改变，因此温度也是一种能量",
+        "温度反映了系统中分子的平均动能，所以温度就是能量的一种表现形式"
+      ],
+      "expected_answer": "A",
+      "model_answer": "A",
+      "verdict": "pass",
+      "judgment_basis": "预期答案=A；模型给出=A；一致，判定通过。 模型理由：温度是分子热运动剧烈程度的宏观表现，反映平均动能，但本身不是能量形式；能量是系统做功或传热的能力，二者概念不同。 该题针对的幻觉点：把相关关系误判为种属关系",
+      "answer_parse_method": "json:answer",
+      "model_raw_output": "{\"answer\": \"A\", \"reason\": \"温度是分子热运动剧烈程度的宏观表现，反映平均动能，但本身不是能量形式；能量是系统做功或传热的能力，二者概念不同。\"}",
+      "target_hallucination_point": "把相关关系误判为种属关系",
+      "reference_explanation": "正确答案指出温度是描述分子平均动能的强度量，不是能量的形式。干扰项错在将温度与能量等同起来，忽略了它们在概念上的区别。",
+      "latency_ms": 1034,
+      "usage": {
+        "prompt_tokens": 259,
+        "completion_tokens": 44,
+        "total_tokens": 303
+      },
+      "error": null
+    },
+    {
+      "eval_id": "EVAL_P098",
+      "concept_id": "P098",
+      "question_type": "hallucination_trap",
+      "question": "关于光的性质，以下说法正确的是：某同学认为光电效应是波粒二象性的下位概念，请判断该说法是否准确。",
+      "options": [
+        "该说法不准确，光电效应是支持波粒二象性的实验现象",
+        "该说法准确，因为波粒二象性是量子力学的下位概念",
+        "该说法不准确，光电效应和波粒二象性没有直接关系",
+        "该说法准确，因为波粒二象性是一种粒子的性质"
+      ],
+      "expected_answer": "A",
+      "model_answer": "A",
+      "verdict": "pass",
+      "judgment_basis": "预期答案=A；模型给出=A；一致，判定通过。 模型理由：光电效应是支持光的粒子性的实验现象，是波粒二象性的证据之一，而非其下位概念，故该说法不准确。 该题针对的幻觉点：把相关关系误判为种属关系",
+      "answer_parse_method": "json:answer",
+      "model_raw_output": "{\"answer\": \"A\", \"reason\": \"光电效应是支持光的粒子性的实验现象，是波粒二象性的证据之一，而非其下位概念，故该说法不准确。\"}",
+      "target_hallucination_point": "把相关关系误判为种属关系",
+      "reference_explanation": "正确答案为A，光电效应是支持波粒二象性的实验现象，而不是下位概念。B、C、D选项均接受了错误前提，混淆了概念与实验现象的关系。",
+      "latency_ms": 923,
+      "usage": {
+        "prompt_tokens": 291,
+        "completion_tokens": 42,
+        "total_tokens": 333
+      },
+      "error": null
+    }
+  ],
+  "notes": [
+    "本评测只把 16 道公开黄金评测题发送给模型接口；未上传任何本地原始语料或私有数据。",
+    "判定口径：pass=模型选项与答案键一致；fail=不一致；unparseable=输出中无合法选项（计入 Fail）；error=接口失败（计入 Fail）。",
+    "temperature=0.0 只能降低随机性，不保证所有服务商都完全确定性；跨模型比较时请固定同一份数据包 sha256。",
+    "答案键来自人工逐题验算（见 reports/eval_human_review_stage4.md），是判定基准。",
+    "报告内不包含 API Key 原文，仅记录环境变量名与密钥指纹（长度 + sha256 前 8 位）。"
+  ]
+}
