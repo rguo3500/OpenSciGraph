@@ -320,8 +320,12 @@ def write_json_report(payload: Dict[str, Any], path: Path) -> Path:
     """把报告以 UTF-8 + 缩进格式写入指定路径（自动创建父目录）。"""
     target = Path(path)
     target.parent.mkdir(parents=True, exist_ok=True)
+    # newline="\n" 必须显式指定：Windows 下 text 模式会把 \n 翻译成 \r\n，
+    # 生成 CRLF 报告，与 .gitattributes 的 `* text=auto eol=lf` 冲突。
     target.write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
+        json.dumps(payload, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+        newline="\n",
     )
     return target
 
